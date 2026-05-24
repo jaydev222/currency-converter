@@ -2,7 +2,10 @@
 
 import React, { useState, useMemo } from 'react';
 
-const exchangeRates: Record<string, number> = {
+// FIX: We tell TypeScript exactly which currencies are allowed
+type Currency = 'USD' | 'EUR' | 'GBP' | 'JPY';
+
+const exchangeRates: Record<Currency, number> = {
   USD: 1,
   EUR: 0.92,
   GBP: 0.78,
@@ -10,11 +13,11 @@ const exchangeRates: Record<string, number> = {
 };
 
 export default function CurrencyConverter() {
+  // FIX: We tell the state to only accept our specific currencies
   const [amount, setAmount] = useState<number>(100);
-  const [fromCurrency, setFromCurrency] = useState<string>('EUR');
-  const [toCurrency, setToCurrency] = useState<string>('USD');
+  const [fromCurrency, setFromCurrency] = useState<Currency>('EUR');
+  const [toCurrency, setToCurrency] = useState<Currency>('USD');
 
-  // Ottimizzazione delle prestazioni tramite memoizzazione (Richiesta dai Test 5 e 6)
   const convertedAmounts = useMemo(() => {
     const baseAmount = amount / exchangeRates[fromCurrency];
     return {
@@ -51,7 +54,7 @@ export default function CurrencyConverter() {
             </label>
             <select
               value={fromCurrency}
-              onChange={(e) => setFromCurrency(e.target.value)}
+              onChange={(e) => setFromCurrency(e.target.value as Currency)}
               className="w-full bg-slate-900/50 border border-slate-600 rounded-lg px-4 py-3 text-white font-mono focus:outline-none focus:border-cyan-500 transition-all cursor-pointer"
             >
               {Object.keys(exchangeRates).map(currency => (
@@ -66,7 +69,7 @@ export default function CurrencyConverter() {
             </label>
             <select
               value={toCurrency}
-              onChange={(e) => setToCurrency(e.target.value)}
+              onChange={(e) => setToCurrency(e.target.value as Currency)}
               className="w-full bg-slate-900/50 border border-slate-600 rounded-lg px-4 py-3 text-white font-mono focus:outline-none focus:border-cyan-500 transition-all cursor-pointer"
             >
               {Object.keys(exchangeRates).map(currency => (
